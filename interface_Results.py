@@ -280,6 +280,35 @@ print(f"Total Score: {score}")
 
 
 
+def exploratory_analysis(file_path):
+    # Read general parameters
+    with open(file_path, 'r') as file:
+        general_params = file.readline().strip()
+
+    # Read the rest of the file into a DataFrame
+    df = pd.read_csv(file_path, sep=' ', skiprows=1, header=None)
+    df.columns = ['Start_Horizontal', 'Start_Vertical', 'Finish_Horizontal', 'Finish_Vertical', 'Earliest_Start', 'Latest_Finish']
+
+    # Display general parameters
+    st.write("## General Parameters")
+    st.text(general_params)
+
+    # Display Data Preview
+    st.write("## Data Preview")
+    st.dataframe(df.head())
+
+    # Basic Statistics
+    st.write("## Basic Statistics")
+    st.table(df.describe())
+
+    # Additional EDA Visualizations
+    # Histograms for numerical columns
+    st.write("## Histograms")
+    for column in df.columns:
+        st.write(f"### {column} Distribution")
+        st.bar_chart(df[column])
+
+    # You can add more plots and analyses as needed
 
 
 # Function to read the submission file
@@ -338,8 +367,8 @@ def main():
     app_mode = st.sidebar.selectbox("Choose the mode", ["Exploratory Analysis", "View Routes"])
 
     if app_mode == "Exploratory Analysis":
-        # ... existing code for Exploratory Analysis ...
-        pass  # Replace this with your actual code for exploratory analysis
+        file_path = st.sidebar.text_input("Enter the path of your dataset", "Datasets/3_Utrecht.txt")
+        exploratory_analysis(file_path)
 
     elif app_mode == "View Routes":
         sled_routes = read_submission_file('submission.txt')
